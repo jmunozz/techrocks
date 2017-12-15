@@ -9,17 +9,24 @@ const SirenRepository = require('./mongoose.js');
 const parse_csv = () => {
 
 
-	fs.createReadStream('./company_list2.csv')
+	var s  = fs.createReadStream('./company_list2.csv')
 		  .pipe(csv({
 		  	separator: ';',
 		  }))
 		  .on('data', function (data) {
 
+		  	// Stop streaming.
+		  	s.pause();
 		  	const object = {
 		  		city: data.L7_NORMALISEE,
 		  		social_reason: data.L1_NORMALISEE,
 		  	};
 		    execute_function(object);
+
+		    // Resume streaming.
+		    setTimeout(() => {
+		    	s.resume();
+		    }, 500)
 		  })
 }
 
@@ -40,10 +47,8 @@ const execute_function = (object) => {
 			'x-chrome-uma-enabled': 1, 
 			'x-client-data': 'CI62yQEIprbJAQjBtskBCPqcygEIqZ3KAQiCn8oBCKijygE=',
 		},
-		opts: {
 			proxy: 'http://localhost:8888',
 			tunnel: false,
-		},
 		transform: (response) => cheerio.load(response),
 	})
 		.then(response => {
@@ -51,7 +56,10 @@ const execute_function = (object) => {
 			return SirenRepository
 				.then(Siren => {
 					const sir = new Siren({name: SOCIAL_REASON, city: CITY, website:first });
-					sir.save();
+					return sir.save()
+						.then(() => {
+							console.log(`${SOCIAL_REASON} added to MongoDB`);
+						});
 				})
 
 		});

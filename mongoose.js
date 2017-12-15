@@ -24,4 +24,4 @@ const mongoose_setup = () => {
 		})
 };
 
-module.export = mongoose_setup();
+module.exports = mongoose_setup();
