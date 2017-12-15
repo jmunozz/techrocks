@@ -8,8 +8,8 @@ const social_reason = 'bearstudio';
 const city = 'ROUEN';
 
 
-requestp({
-
-}).then(response => {
-	console.log(response);
-})
+requestp(`https://www.google.fr/search?q=${social_reason}+${city}`)
+	.then(response => {
+		response = response.body;
+		console.log(response);
+	});
