@@ -41,6 +41,10 @@ const execute_function = (object) => {
 			'x-chrome-uma-enabled': 1, 
 			'x-client-data': 'CI62yQEIprbJAQjBtskBCPqcygEIqZ3KAQiCn8oBCKijygE=',
 		},
+		opts: {
+			proxy: 'http://localhost:8888',
+			tunnel: false,
+		}
 		transform: (response) => cheerio.load(response),
 	})
 		.then(response => {
